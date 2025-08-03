@@ -176,11 +176,30 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
+// Функции для работы с localStorage
+const loadFromStorage = (key: string, defaultValue: any) => {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : defaultValue;
+  } catch (error) {
+    console.error(`Error loading ${key} from localStorage:`, error);
+    return defaultValue;
+  }
+};
+
+const saveToStorage = (key: string, value: any) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Error saving ${key} to localStorage:`, error);
+  }
+};
+
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [state, setState] = useState<AppState>({
-    reports: [],
-    news: [],
-    documents: [],
+    reports: loadFromStorage('reports', []),
+    news: loadFromStorage('news', []),
+    documents: loadFromStorage('documents', []),
     authorities: [
       {
         id: '1',
@@ -380,10 +399,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       date: new Date().toISOString().split('T')[0],
       status: 'pending'
     };
-    setState(prevState => ({
-      ...prevState,
-      reports: [...prevState.reports, newReport]
-    }));
+    setState(prevState => {
+      const newReports = [...prevState.reports, newReport];
+      saveToStorage('reports', newReports);
+      return {
+        ...prevState,
+        reports: newReports
+      };
+    });
   };
 
   const updateReportStatus = (id: string, status: Report['status']) => {
@@ -426,24 +449,36 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       date: new Date().toISOString().split('T')[0],
       isPublished: true // Default to published
     };
-    setState(prevState => ({
-      ...prevState,
-      news: [...prevState.news, newNews]
-    }));
+    setState(prevState => {
+      const newNewsList = [...prevState.news, newNews];
+      saveToStorage('news', newNewsList);
+      return {
+        ...prevState,
+        news: newNewsList
+      };
+    });
   };
 
   const updateNews = (news: NewsItem) => {
-    setState(prevState => ({
-      ...prevState,
-      news: prevState.news.map(n => n.id === news.id ? news : n)
-    }));
+    setState(prevState => {
+      const updatedNews = prevState.news.map(n => n.id === news.id ? news : n);
+      saveToStorage('news', updatedNews);
+      return {
+        ...prevState,
+        news: updatedNews
+      };
+    });
   };
 
   const deleteNews = (id: string) => {
-    setState(prevState => ({
-      ...prevState,
-      news: prevState.news.filter(news => news.id !== id)
-    }));
+    setState(prevState => {
+      const filteredNews = prevState.news.filter(news => news.id !== id);
+      saveToStorage('news', filteredNews);
+      return {
+        ...prevState,
+        news: filteredNews
+      };
+    });
   };
 
   // Document methods
@@ -452,24 +487,36 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       ...document,
       id: generateId()
     };
-    setState(prevState => ({
-      ...prevState,
-      documents: [...prevState.documents, newDocument]
-    }));
+    setState(prevState => {
+      const newDocuments = [...prevState.documents, newDocument];
+      saveToStorage('documents', newDocuments);
+      return {
+        ...prevState,
+        documents: newDocuments
+      };
+    });
   };
 
   const updateDocument = (document: DocumentItem) => {
-    setState(prevState => ({
-      ...prevState,
-      documents: prevState.documents.map(d => d.id === document.id ? document : d)
-    }));
+    setState(prevState => {
+      const updatedDocuments = prevState.documents.map(d => d.id === document.id ? document : d);
+      saveToStorage('documents', updatedDocuments);
+      return {
+        ...prevState,
+        documents: updatedDocuments
+      };
+    });
   };
 
   const deleteDocument = (id: string) => {
-    setState(prevState => ({
-      ...prevState,
-      documents: prevState.documents.filter(doc => doc.id !== id)
-    }));
+    setState(prevState => {
+      const filteredDocuments = prevState.documents.filter(doc => doc.id !== id);
+      saveToStorage('documents', filteredDocuments);
+      return {
+        ...prevState,
+        documents: filteredDocuments
+      };
+    });
   };
 
   // Authority methods

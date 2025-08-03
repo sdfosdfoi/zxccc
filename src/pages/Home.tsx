@@ -3,39 +3,15 @@ import { ChevronLeft, ChevronRight, FileText, Building, Users, Send, Shield } fr
 import CaptchaField from '../components/CaptchaField';
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-
-// Email sending function (for frontend, we'll use a different approach)
-const sendEmail = async (content: string) => {
-  try {
-    // In a real application, you would send this to your backend API
-    // For now, we'll simulate the email sending
-    const response = await fetch('/api/send-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        to: 'plaza-gel2024@yandex.ru',
-        subject: 'Новое обращение с портала',
-        content: content,
-        timestamp: new Date().toISOString()
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error('Ошибка отправки письма');
-    }
-    
-    return await response.json();
-  } catch (error) {
-    // For demo purposes, we'll just log the content that would be sent
-    console.log('Обращение для отправки на plaza-gel2024@yandex.ru:', {
-      content,
-      timestamp: new Date().toISOString()
-    });
-    // Simulate successful sending
-    return { success: true };
-  }
+// Простая отправка на email через mailto
+const sendEmail = (content: string) => {
+  const subject = 'Новое обращение с портала';
+  const body = `Описание нарушения:\n\n${content}\n\nВремя отправки: ${new Date().toLocaleString()}`;
+  
+  // Отправляем через mailto (откроется почтовый клиент)
+  window.location.href = `mailto:plaza-gel2024@yandex.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+  return Promise.resolve({ success: true });
 };
 
 const Home: React.FC = () => {
