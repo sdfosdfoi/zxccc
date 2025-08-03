@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, FileText, Building, Users, Send, Shield } fr
 import CaptchaField from '../components/CaptchaField';
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
+
 // Отправка email через backend API
 const sendEmail = async (content: string) => {
   try {
@@ -94,55 +95,55 @@ const Home: React.FC = () => {
               </h2>
               <div className="mt-5 min-h-[140px] flex items-center justify-center bg-white shadow-md border border-gray-200 p-6">
                 <div className="text-center w-full">
-{currentSlide === 0  (
-                    div
-                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                  {currentSlide === 0 && (
+                    <div>
+                      <h3 className="text-xl font-bold text-blue-800 mb-2">
                         {siteTexts.sliderText1Title}
-                      /h3
-                      p className="text-base text-gray-700"
+                      </h3>
+                      <p className="text-base text-gray-700">
                         {siteTexts.sliderText1Content}
-                      /p
-                    /div
+                      </p>
+                    </div>
                   )}
-{currentSlide === 1  (
-                    div
-                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                  {currentSlide === 1 && (
+                    <div>
+                      <h3 className="text-xl font-bold text-blue-800 mb-2">
                         {siteTexts.sliderText2Title}
-                      /h3
-                      p className="text-base text-gray-700"
+                      </h3>
+                      <p className="text-base text-gray-700">
                         {siteTexts.sliderText2Content}
-                      /p
-                    /div
+                      </p>
+                    </div>
                   )}
-{currentSlide === 2  (
-                    div
-                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                  {currentSlide === 2 && (
+                    <div>
+                      <h3 className="text-xl font-bold text-blue-800 mb-2">
                         {siteTexts.sliderText3Title}
-                      /h3
-                      p className="text-base text-gray-700"
+                      </h3>
+                      <p className="text-base text-gray-700">
                         {siteTexts.sliderText3Content}
-                      /p
-                    /div
+                      </p>
+                    </div>
                   )}
-{currentSlide === 3  (
-                    div
-                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                  {currentSlide === 3 && (
+                    <div>
+                      <h3 className="text-xl font-bold text-blue-800 mb-2">
                         {siteTexts.sliderText4Title}
-                      /h3
-                      p className="text-base text-gray-700"
+                      </h3>
+                      <p className="text-base text-gray-700">
                         {siteTexts.sliderText4Content}
-                      /p
-                    /div
+                      </p>
+                    </div>
                   )}
-{currentSlide = 4  (
-                    div
-                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                  {currentSlide === 4 && (
+                    <div>
+                      <h3 className="text-xl font-bold text-blue-800 mb-2">
                         {siteTexts.sliderText5Title}
-                      /h3
-                      p className="text-base text-gray-700"
+                      </h3>
+                      <p className="text-base text-gray-700">
                         {siteTexts.sliderText5Content}
-                      /p
-                    /div
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
