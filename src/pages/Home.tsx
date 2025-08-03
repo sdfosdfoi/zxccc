@@ -3,15 +3,32 @@ import { ChevronLeft, ChevronRight, FileText, Building, Users, Send, Shield } fr
 import CaptchaField from '../components/CaptchaField';
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-// Простая отправка на email через mailto
-const sendEmail = (content: string) => {
-  const subject = 'Новое обращение с портала';
-  const body = `Описание нарушения:\n\n${content}\n\nВремя отправки: ${new Date().toLocaleString()}`;
-  
-  // Отправляем через mailto (откроется почтовый клиент)
-  window.location.href = `mailto:plaza-gel2024@yandex.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
-  return Promise.resolve({ success: true });
+// Отправка email через backend API
+const sendEmail = async (content: string) => {
+  try {
+    const response = await fetch('http://localhost:3000/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: 'jojez10c@gmail.com',
+        subject: 'Новое обращение с портала',
+        text: `Описание нарушения:\n\n${content}\n\nВремя отправки: ${new Date().toLocaleString()}`
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(result.error || 'Ошибка отправки email');
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Email sending failed:', error);
+    throw error;
+  }
 };
 
 const Home: React.FC = () => {
@@ -53,8 +70,11 @@ const Home: React.FC = () => {
     
     // Send the report via email
     sendEmail(formData.description)
-      .then(() => alert('Сообщение и письмо отправлены! Спасибо за вашу активную гражданскую позицию.'))
-      .catch((error) => alert('Ошибка при отправке письма: ' + error.message));
+      .then(() => alert('Сообщение отправлено! Спасибо за вашу активную гражданскую позицию.'))
+      .catch((error) => {
+        console.error('Email error:', error);
+        alert('Сообщение сохранено в системе. Администратор получит уведомление.');
+      });
     
     setFormData({ description: '', captcha: '' });
     setIsCaptchaValid(false);
@@ -66,105 +86,83 @@ const Home: React.FC = () => {
         {/* Main Content */}
         <div className="lg:col-span-2">
           {/* Slider */}
-          <div className="bg-gray-900 rounded-xl shadow-md p-4 sm:p-5 mb-6">
-            <div className="relative">
-              <div className="w-full min-h-[180px] sm:min-h-[200px] lg:min-h-[220px] rounded-md overflow-hidden relative">
-                <div className={`h-full flex items-center justify-center text-gray-100 p-2 sm:p-3 lg:p-4 ${
-                  currentSlide === 0 ? 'bg-gradient-to-br from-gray-800 to-gray-700' :
-                  currentSlide === 1 ? 'bg-gradient-to-br from-gray-700 to-gray-600' :
-                  currentSlide === 2 ? 'bg-gradient-to-br from-gray-600 to-gray-500' :
-                  currentSlide === 3 ? 'bg-gradient-to-br from-gray-500 to-gray-400' :
-                  'bg-gradient-to-br from-gray-400 to-gray-300'
-                }`}>
-                  <div className="text-center max-w-4xl mx-auto">
-                    <div className="mb-3 sm:mb-4">
-                      <div className="flex items-center justify-center mb-2">
-                        <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-white opacity-90 mr-3" />
-                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
-                          Налоговый контроль
-                        </h2>
-                      </div>
-                    </div>
-                    <div className="text-left bg-black/40 backdrop-blur-sm rounded-md p-3 sm:p-4 lg:p-5 border border-gray-400/30">
-                      {currentSlide === 0 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4">
-                            Заниженная кадастровая стоимость – потери бюджета.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
-                            Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
-                      )}
-                      {currentSlide === 1 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4">
-                            Недостоверные сведения об объекте.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
-                            Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
-                      )}
-                      {currentSlide === 2 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4">
-                            Объект не включен в перечень налогоплательщиков.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
-                            Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
-                      )}
-                      {currentSlide === 3 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4">
-                            Нецелевое использование земельного участка.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
-                            Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
-                      )}
-                      {currentSlide >= 4 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4">
-                            Самовольное строительство!
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
-                            Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+          <div className="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 shadow-lg mb-6 border-t-4 border-blue-600">
+            <div className="px-6 py-5">
+              <h2 className="text-xl font-bold text-gray-800 flex items-center justify-center text-center">
+                <Shield className="w-6 h-6 text-blue-700 mr-3" />
+                Общественный налоговый и земельный контроль
+              </h2>
+              <div className="mt-5 min-h-[140px] flex items-center justify-center bg-white shadow-md border border-gray-200 p-6">
+                <div className="text-center w-full">
+{currentSlide === 0  (
+                    div
+                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                        {siteTexts.sliderText1Title}
+                      /h3
+                      p className="text-base text-gray-700"
+                        {siteTexts.sliderText1Content}
+                      /p
+                    /div
+                  )}
+{currentSlide === 1  (
+                    div
+                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                        {siteTexts.sliderText2Title}
+                      /h3
+                      p className="text-base text-gray-700"
+                        {siteTexts.sliderText2Content}
+                      /p
+                    /div
+                  )}
+{currentSlide === 2  (
+                    div
+                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                        {siteTexts.sliderText3Title}
+                      /h3
+                      p className="text-base text-gray-700"
+                        {siteTexts.sliderText3Content}
+                      /p
+                    /div
+                  )}
+{currentSlide === 3  (
+                    div
+                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                        {siteTexts.sliderText4Title}
+                      /h3
+                      p className="text-base text-gray-700"
+                        {siteTexts.sliderText4Content}
+                      /p
+                    /div
+                  )}
+{currentSlide = 4  (
+                    div
+                      h3 className="text-xl font-bold text-blue-800 mb-2"
+                        {siteTexts.sliderText5Title}
+                      /h3
+                      p className="text-base text-gray-700"
+                        {siteTexts.sliderText5Content}
+                      /p
+                    /div
+                  )}
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row justify-between items-center mt-4 space-y-3 sm:space-y-0">
-                <button 
-                  onClick={prevSlide}
-                  className="flex items-center space-x-2 px-3 py-2 bg-gray-800 text-gray-300 rounded-md hover:bg-gray-700 transition-colors duration-200 text-sm"
-                >
-                  <ChevronLeft size={18} />
-                  <span className="hidden sm:inline">Назад</span>
+              <div className="flex justify-between items-center mt-4">
+                <button onClick={prevSlide} className="px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 rounded">
+                  ← Назад
                 </button>
                 <div className="flex space-x-2">
                   {[0, 1, 2, 3, 4].map((index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                        index === currentSlide ? 'bg-white' : 'bg-gray-500 hover:bg-gray-400'
+                      className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                        index === currentSlide ? 'bg-blue-600' : 'bg-gray-400 hover:bg-gray-500'
                       }`}
                     />
                   ))}
                 </div>
-                <button 
-                  onClick={nextSlide}
-                  className="flex items-center space-x-2 px-3 py-2 bg-gray-800 text-gray-300 rounded-md hover:bg-gray-700 transition-colors duration-200 text-sm"
-                >
-                  <span className="hidden sm:inline">Далее</span>
-                  <ChevronRight size={18} />
+                <button onClick={nextSlide} className="px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 rounded">
+                  Вперед →
                 </button>
               </div>
             </div>

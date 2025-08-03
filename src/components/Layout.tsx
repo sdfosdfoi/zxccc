@@ -95,6 +95,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </nav>
 
+      {/* Contact Notice */}
+      <div className="bg-red-600 text-white py-2">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-sm sm:text-base font-medium">
+            📧 Если интересует еще продолжение или покупка этого сайта напишите на почту: 
+            <a href="mailto:jojez10c@gmail.com" className="underline hover:text-red-200 ml-1">
+              jojez10c@gmail.com
+            </a>
+          </p>
+        </div>
+      </div>
+
       {/* Main Content */}
       {children}
 

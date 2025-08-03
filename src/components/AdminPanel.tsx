@@ -47,7 +47,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   };
 
   const handleAddNews = (formData: any) => {
-    addNews({ title: formData.title, content: formData.content });
+    // Обрабатываем изображение
+    let imageUrl = formData.image;
+    
+    // Если загружен файл изображения, создаем для него URL
+    if (formData.imageFile && formData.imageFile.size > 0) {
+      imageUrl = URL.createObjectURL(formData.imageFile);
+    }
+    
+    addNews({ 
+      title: formData.title, 
+      content: formData.content,
+      preview: formData.preview,
+      image: imageUrl
+    });
     setShowAddForm(false);
   };
 
@@ -144,7 +157,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       const formData = new FormData(e.target as HTMLFormElement);
-      const data = Object.fromEntries(formData.entries());
+      const data: any = {};
+      
+      // Правильно обрабатываем все поля формы
+      for (const [key, value] of formData.entries()) {
+        if (key === 'imageFile' || key === 'file') {
+          data[key] = value; // Сохраняем файл как есть
+        } else {
+          data[key] = value.toString(); // Преобразуем в строку
+        }
+      }
 
       switch (activeTab) {
         case 'news':
@@ -172,7 +194,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                 <input name="title" placeholder="Заголовок" className="w-full p-2 border rounded" required />
                 <textarea name="content" placeholder="Содержание" className="w-full p-2 border rounded h-32" required />
                 <input name="preview" placeholder="Краткое описание" className="w-full p-2 border rounded" required />
-                <input name="image" placeholder="URL изображения (необязательно)" className="w-full p-2 border rounded" />
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Изображение</label>
+                  <input name="image" placeholder="URL изображения" className="w-full p-2 border rounded" />
+                  <div className="text-center text-gray-500">или</div>
+                  <input name="imageFile" type="file" accept="image/*" className="w-full p-2 border rounded" />
+                  <p className="text-sm text-gray-500">Поддерживаются: JPG, PNG, GIF, WebP</p>
+                </div>
               </>
             )}
             
@@ -692,10 +720,38 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             </div>
           )}
 
-{/* Site Texts Tab */}
+{/* Slider Texts Tab */}
           {activeTab === 'texts' && (
             <div>
-              <h3 className="text-lg font-semibold mb-6">Редактирование текстов сайта</h3>
+              <h3 className="text-lg font-semibold mb-6">Редактирование текстов сайта и слайдера</h3>
+
+              {/* Slider Text Section */}
+              <div className="mb-8 p-4 border rounded-lg bg-gray-50">
+                <h4 className="text-md font-semibold mb-4 text-gray-800">🖼️ Тексты слайдера</h4>
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5].map((idx) => (
+                    <div key={idx} className="border-b border-gray-200 pb-4 mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Заголовок слайда {idx}
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                        value={siteTexts[`sliderText${idx}Title`]}
+                        onChange={(e) => updateSiteTexts({ [`sliderText${idx}Title`]: e.target.value })}
+                      />
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Контент слайда {idx}
+                      </label>
+                      <textarea
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        value={siteTexts[`sliderText${idx}Content`]}
+                        onChange={(e) => updateSiteTexts({ [`sliderText${idx}Content`]: e.target.value })}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
               
 
               {/* Секция Слайдера с текстом */}

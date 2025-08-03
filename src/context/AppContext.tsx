@@ -12,6 +12,7 @@ interface NewsItem {
   id: string;
   title: string;
   content: string;
+  preview: string; // Add preview field
   date: string;
   isPublished: boolean; // Ensure this is always defined
   image?: string; // Add image property for news
@@ -64,6 +65,18 @@ interface SiteTexts {
   sliderDescription: string;
   sliderButtonPrev: string;
   sliderButtonNext: string;
+  
+  // Slider Text Content
+  sliderText1Title: string;
+  sliderText1Content: string;
+  sliderText2Title: string;
+  sliderText2Content: string;
+  sliderText3Title: string;
+  sliderText3Content: string;
+  sliderText4Title: string;
+  sliderText4Content: string;
+  sliderText5Title: string;
+  sliderText5Content: string;
   
   // Putin Quotes Section
   putinName: string;
@@ -330,6 +343,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       sliderButtonPrev: 'Назад',
       sliderButtonNext: 'Далее',
       
+      // Slider Text Content
+      sliderText1Title: 'Заниженная кадастровая стоимость (занижены налоги) – потери бюджета',
+      sliderText1Content: 'Сообщи, направим информацию в госорганы!',
+      sliderText2Title: 'Недостоверные сведения об объекте и его характеристиках.',
+      sliderText2Content: 'Сообщи, направим информацию в госорганы!',
+      sliderText3Title: 'Объект не включен в перечень налогоплательщиков от кадастровой стоимости – потери бюджета.',
+      sliderText3Content: 'Сообщи, направим информацию в госорганы!',
+      sliderText4Title: 'Нецелевое использование земельного участка.',
+      sliderText4Content: 'Сообщи, направим информацию в госорганы!',
+      sliderText5Title: 'Самовольное строительство, неоформленный объект недвижимости!',
+      sliderText5Content: 'Сообщи, направим информацию в госорганы!',
+      
       // Putin Quotes Section
       putinName: 'Путин В.В.',
       putinPosition: 'Позиция главы государства',
@@ -432,12 +457,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         id: generateId(),
         title: `Обращение ${report.id}`,
         content: report.content,
-        date: new Date().toISOString().split('T')[0]
+        preview: report.content.substring(0, 150) + (report.content.length > 150 ? '...' : ''),
+        date: new Date().toISOString().split('T')[0],
+        isPublished: true
       };
-      setState(prevState => ({
-        ...prevState,
-        news: [...prevState.news, newsItem]
-      }));
+      setState(prevState => {
+        const newNewsList = [...prevState.news, newsItem];
+        saveToStorage('news', newNewsList);
+        return {
+          ...prevState,
+          news: newNewsList
+        };
+      });
     }
   };
 
