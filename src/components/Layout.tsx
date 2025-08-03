@@ -20,22 +20,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header className="bg-white shadow-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <img 
                 src={logoPath} 
                 alt="Логотип" 
-                className="h-12 w-12 object-contain"
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain flex-shrink-0"
                 onError={(e) => {
                   // Fallback к старому логотипу если новый не загружается
                   (e.target as HTMLImageElement).src = 'https://iimg.su/i/zqNOrE';
                 }}
               />
-              <div>
-                <Link to="/" className="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors">
-                  Общественный налоговый и земельный контроль
+              <div className="min-w-0">
+                <Link to="/" className="text-sm sm:text-lg md:text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors block leading-tight">
+                  <span className="hidden sm:inline">Общественный налоговый и земельный контроль</span>
+                  <span className="sm:hidden">Налоговый контроль</span>
                 </Link>
-                <p className="text-sm text-gray-600">
-                  Все граждане России обязаны платить налоги
+                <p className="text-xs sm:text-sm text-gray-600 leading-tight">
+                  <span className="hidden sm:inline">Все граждане России обязаны платить налоги</span>
+                  <span className="sm:hidden">Контроль налогообложения</span>
                 </p>
               </div>
             </div>
@@ -46,21 +48,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Navigation */}
       <nav className="bg-blue-800 text-white">
         <div className="container mx-auto px-4">
-          <ul className="flex space-x-8 py-3">
+          <ul className="flex flex-wrap gap-2 sm:gap-4 md:gap-8 py-3 text-sm sm:text-base">
             <li>
               <Link 
                 to="/" 
-                className={`hover:text-blue-200 transition-colors ${
+                className={`hover:text-blue-200 transition-colors whitespace-nowrap ${
                   location.pathname === '/' ? 'text-blue-200 font-medium' : ''
                 }`}
               >
-Главная
+                Главная
               </Link>
             </li>
             <li>
               <Link 
                 to="/news" 
-                className={`hover:text-blue-200 transition-colors ${
+                className={`hover:text-blue-200 transition-colors whitespace-nowrap ${
                   location.pathname === '/news' ? 'text-blue-200 font-medium' : ''
                 }`}
               >
@@ -70,21 +72,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <li>
               <Link 
                 to="/documents" 
-                className={`hover:text-blue-200 transition-colors ${
+                className={`hover:text-blue-200 transition-colors whitespace-nowrap ${
                   location.pathname === '/documents' ? 'text-blue-200 font-medium' : ''
                 }`}
               >
-                Нормативные документы
+                <span className="hidden sm:inline">Нормативные документы</span>
+                <span className="sm:hidden">Документы</span>
               </Link>
             </li>
             <li>
               <Link 
                 to="/authorities" 
-                className={`hover:text-blue-200 transition-colors ${
+                className={`hover:text-blue-200 transition-colors whitespace-nowrap ${
                   location.pathname === '/authorities' ? 'text-blue-200 font-medium' : ''
                 }`}
               >
-                Контролирующие органы
+                <span className="hidden sm:inline">Контролирующие органы</span>
+                <span className="sm:hidden">Органы</span>
               </Link>
             </li>
           </ul>

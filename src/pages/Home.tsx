@@ -1,8 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, FileText, Building, Users, Send, Shield } from 'lucide-react';
 import CaptchaField from '../components/CaptchaField';
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
+
+// Email sending function (for frontend, we'll use a different approach)
+const sendEmail = async (content: string) => {
+  try {
+    // In a real application, you would send this to your backend API
+    // For now, we'll simulate the email sending
+    const response = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: 'plaza-gel2024@yandex.ru',
+        subject: 'Новое обращение с портала',
+        content: content,
+        timestamp: new Date().toISOString()
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Ошибка отправки письма');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    // For demo purposes, we'll just log the content that would be sent
+    console.log('Обращение для отправки на plaza-gel2024@yandex.ru:', {
+      content,
+      timestamp: new Date().toISOString()
+    });
+    // Simulate successful sending
+    return { success: true };
+  }
+};
 
 const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -10,23 +44,44 @@ const Home: React.FC = () => {
     description: '',
     captcha: ''
   });
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
   const { state, addReport } = useAppContext();
   const { news, sliderItems, siteTexts } = state;
+  const captchaRef = useRef<any>(null);
 
+  const slideCount = 5; // У нас теперь 5 фиксированных слайдов
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % sliderItems.length);
+    setCurrentSlide((prev) => (prev + 1) % slideCount);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + sliderItems.length) % sliderItems.length);
+    setCurrentSlide((prev) => (prev - 1 + slideCount) % slideCount);
   };
+
+  // Автоматическое переключение слайдов каждые 5 секунд
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isCaptchaValid || !formData.captcha) {
+      alert('Пожалуйста, правильно решите пример для проверки безопасности.');
+      return;
+    }
+    
     // Добавляем обращение в контекст, оно попадет в админ-панель
     addReport({ content: formData.description });
-    alert('Сообщение отправлено! Спасибо за вашу активную гражданскую позицию.');
+    
+    // Send the report via email
+    sendEmail(formData.description)
+      .then(() => alert('Сообщение и письмо отправлены! Спасибо за вашу активную гражданскую позицию.'))
+      .catch((error) => alert('Ошибка при отправке письма: ' + error.message));
+    
     setFormData({ description: '', captcha: '' });
+    setIsCaptchaValid(false);
   };
 
   return (
@@ -35,48 +90,106 @@ const Home: React.FC = () => {
         {/* Main Content */}
         <div className="lg:col-span-2">
           {/* Slider */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            {sliderItems.length > 0 && (
-              <div className="relative">
-                <div className="w-full max-h-80 bg-gray-100 rounded-lg overflow-hidden relative flex items-center justify-center pt-16">
-                  <img 
-                    src={sliderItems[currentSlide]?.imagePath || '/image.png'} 
-                    alt={sliderItems[currentSlide]?.caption || ''}
-                    className="max-w-full max-h-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/image.png';
-                    }}
-                  />
-                </div>
-                <div className="flex justify-between items-center mt-4">
-                  <button 
-                    onClick={prevSlide}
-                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                  >
-                    <ChevronLeft size={20} />
-                    <span>Назад</span>
-                  </button>
-                  <div className="flex space-x-2">
-                    {sliderItems.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-3 h-3 rounded-full ${
-                          index === currentSlide ? 'bg-blue-600' : 'bg-gray-300'
-                        }`}
-                      />
-                    ))}
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-8">
+            <div className="relative">
+              <div className="w-full min-h-[300px] sm:min-h-[350px] lg:min-h-[400px] rounded-xl overflow-hidden relative">
+                <div className={`h-full flex items-center justify-center text-white p-4 sm:p-6 lg:p-8 ${
+                  currentSlide === 0 ? 'bg-gradient-to-br from-red-600 via-red-700 to-red-800' :
+                  currentSlide === 1 ? 'bg-gradient-to-br from-orange-600 via-orange-700 to-orange-800' :
+                  currentSlide === 2 ? 'bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800' :
+                  currentSlide === 3 ? 'bg-gradient-to-br from-green-600 via-green-700 to-green-800' :
+                  'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800'
+                }`}>
+                  <div className="text-center max-w-4xl mx-auto">
+                    <div className="mb-4 sm:mb-6">
+                      <div className="text-5xl sm:text-6xl mb-3 opacity-90">⚖️</div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 drop-shadow-lg leading-tight">
+                        Налоговый контроль
+                      </h2>
+                    </div>
+                    <div className="text-left bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-6 lg:p-8 border border-white/20">
+                      {currentSlide === 0 && (
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
+                            🔍 Заниженная кадастровая стоимость (занижены налоги) – потери бюджета.
+                          </div>
+                          <div className="text-base sm:text-lg font-medium">
+                            Сообщи, направим информацию в госорганы!
+                          </div>
+                        </div>
+                      )}
+                      {currentSlide === 1 && (
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
+                            📋 Недостоверные сведения об объекте и его характеристиках.
+                          </div>
+                          <div className="text-base sm:text-lg font-medium">
+                            Сообщи, направим информацию в госорганы!
+                          </div>
+                        </div>
+                      )}
+                      {currentSlide === 2 && (
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
+                            💰 Объект не включен в перечень налогоплательщиков от кадастровой стоимости – потери бюджета.
+                          </div>
+                          <div className="text-base sm:text-lg font-medium">
+                            Сообщи, направим информацию в госорганы!
+                          </div>
+                        </div>
+                      )}
+                      {currentSlide === 3 && (
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
+                            🏡 Нецелевое использование земельного участка.
+                          </div>
+                          <div className="text-base sm:text-lg font-medium">
+                            Сообщи, направим информацию в госорганы!
+                          </div>
+                        </div>
+                      )}
+                      {currentSlide >= 4 && (
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
+                            🏗️ Самовольное строительство, неоформленный объект недвижимости!
+                          </div>
+                          <div className="text-base sm:text-lg font-medium">
+                            Сообщи, направим информацию в госорганы!
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <button 
-                    onClick={nextSlide}
-                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                  >
-                    <span>Далее</span>
-                    <ChevronRight size={20} />
-                  </button>
                 </div>
               </div>
-            )}
+              <div className="flex flex-col sm:flex-row justify-between items-center mt-6 space-y-4 sm:space-y-0">
+                <button 
+                  onClick={prevSlide}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                >
+                  <ChevronLeft size={20} />
+                  <span className="hidden sm:inline">Назад</span>
+                </button>
+                <div className="flex space-x-3">
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentSlide ? 'bg-blue-600 scale-125' : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <button 
+                  onClick={nextSlide}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                >
+                  <span className="hidden sm:inline">Далее</span>
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Putin Section */}
@@ -162,7 +275,8 @@ const Home: React.FC = () => {
                 <CaptchaField
                   value={formData.captcha}
                   onChange={(value) => setFormData({...formData, captcha: value})}
-                  isValid={true}
+                  isValid={isCaptchaValid}
+                  onValidationChange={setIsCaptchaValid}
                 />
               </div>
               

@@ -5,11 +5,12 @@ interface CaptchaFieldProps {
   value: string;
   onChange: (value: string) => void;
   isValid: boolean;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
-const CaptchaField: React.FC<CaptchaFieldProps> = ({ value, onChange, isValid }) => {
+const CaptchaField: React.FC<CaptchaFieldProps> = ({ value, onChange, isValid, onValidationChange }) => {
   const [question, setQuestion] = useState({ a: 0, b: 0, answer: 0 });
-  const [operations] = useState(['+', '-', '×']);
+  const [operations] = useState(['+', '-']);
   const [currentOperation, setCurrentOperation] = useState('+');
 
   const generateQuestion = () => {
@@ -27,11 +28,6 @@ const CaptchaField: React.FC<CaptchaFieldProps> = ({ value, onChange, isValid })
         b = Math.floor(Math.random() * 10) + 1;
         answer = a - b;
         break;
-      case '×':
-        a = Math.floor(Math.random() * 10) + 1;
-        b = Math.floor(Math.random() * 10) + 1;
-        answer = a * b;
-        break;
       default:
         a = 2;
         b = 3;
@@ -48,8 +44,18 @@ const CaptchaField: React.FC<CaptchaFieldProps> = ({ value, onChange, isValid })
   }, []);
 
   const checkAnswer = () => {
-    return parseInt(value) === question.answer;
+    const isCorrect = parseInt(value) === question.answer;
+    if (onValidationChange) {
+      onValidationChange(isCorrect);
+    }
+    return isCorrect;
   };
+
+  useEffect(() => {
+    if (value) {
+      checkAnswer();
+    }
+  }, [value, question.answer]);
 
   return (
     <div className="space-y-3">

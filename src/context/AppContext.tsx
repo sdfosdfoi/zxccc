@@ -13,7 +13,8 @@ interface NewsItem {
   title: string;
   content: string;
   date: string;
-  isPublished?: boolean;
+  isPublished: boolean; // Ensure this is always defined
+  image?: string; // Add image property for news
 }
 
 interface DocumentItem {
@@ -422,7 +423,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const newNews: NewsItem = {
       ...news,
       id: generateId(),
-      date: new Date().toISOString().split('T')[0]
+      date: new Date().toISOString().split('T')[0],
+      isPublished: true // Default to published
     };
     setState(prevState => ({
       ...prevState,
