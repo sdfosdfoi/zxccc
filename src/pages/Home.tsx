@@ -66,107 +66,110 @@ const Home: React.FC = () => {
         {/* Main Content */}
         <div className="lg:col-span-2">
           {/* Slider */}
-          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-8">
-            <div className="relative">
-              <div className="w-full min-h-[300px] sm:min-h-[350px] lg:min-h-[400px] rounded-xl overflow-hidden relative">
-                <div className={`h-full flex items-center justify-center text-white p-4 sm:p-6 lg:p-8 ${
-                  currentSlide === 0 ? 'bg-gradient-to-br from-red-600 via-red-700 to-red-800' :
-                  currentSlide === 1 ? 'bg-gradient-to-br from-orange-600 via-orange-700 to-orange-800' :
-                  currentSlide === 2 ? 'bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800' :
-                  currentSlide === 3 ? 'bg-gradient-to-br from-green-600 via-green-700 to-green-800' :
-                  'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800'
-                }`}>
-                  <div className="text-center max-w-4xl mx-auto">
-                    <div className="mb-4 sm:mb-6">
-                      <div className="text-5xl sm:text-6xl mb-3 opacity-90">⚖️</div>
-                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 drop-shadow-lg leading-tight">
+          div className="bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 mb-8"
+            div className="relative"
+              div className="w-full min-h-[350px] sm:min-h-[400px] lg:min-h-[450px] rounded-xl overflow-hidden relative"
+                div className={`h-full flex items-center justify-center text-gray-200 p-4 sm:p-6 lg:p-8 ${
+                  currentSlide === 0 ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700' :
+                  currentSlide === 1 ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600' :
+                  currentSlide === 2 ? 'bg-gradient-to-br from-gray-700 via-gray-600 to-gray-500' :
+                  currentSlide === 3 ? 'bg-gradient-to-br from-gray-600 via-gray-500 to-gray-400' :
+                  'bg-gradient-to-br from-gray-500 via-gray-400 to-gray-300'
+                }`}
+                  div className="text-center mx-auto"
+                    div className="mb-4 sm:mb-6"
+                      div className="text-5xl sm:text-7xl mb-3 opacity-80"
+                        {/* Change Icon */}
+                        ❤️
+                      /div
+                      h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 hover:text-gray-400 transition-colors"
                         Налоговый контроль
-                      </h2>
-                    </div>
-                    <div className="text-left bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-6 lg:p-8 border border-white/20">
+                      /h2
+                    /div
+                    div className="text-left bg-gray-800/50 backdrop-blur-lg rounded-lg p-5 sm:p-7 lg:p-10 border border-white/20"
                       {currentSlide === 0 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
-                            🔍 Заниженная кадастровая стоимость (занижены налоги) – потери бюджета.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
+                        div className="space-y-3 sm:space-y-4"
+                          div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4"
+                            Заниженная кадастровая стоимость – потери бюджета.
+                          /div
+                          div className="text-base sm:text-lg font-medium"
                             Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
+                          /div
+                        /div
                       )}
                       {currentSlide === 1 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
-                            📋 Недостоверные сведения об объекте и его характеристиках.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
+                        div className="space-y-3 sm:space-y-4"
+                          div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4"
+                            Недостоверные сведения об объекте.
+                          /div
+                          div className="text-base sm:text-lg font-medium"
                             Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
+                          /div
+                        /div
                       )}
                       {currentSlide === 2 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
-                            💰 Объект не включен в перечень налогоплательщиков от кадастровой стоимости – потери бюджета.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
+                        div className="space-y-3 sm:space-y-4"
+                          div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4"
+                            Объект не включен в перечень налогоплательщиков.
+                          /div
+                          div className="text-base sm:text-lg font-medium"
                             Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
+                          /div
+                        /div
                       )}
                       {currentSlide === 3 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
-                            🏡 Нецелевое использование земельного участка.
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
+                        div className="space-y-3 sm:space-y-4"
+                          div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4"
+                            Нецелевое использование земельного участка.
+                          /div
+                          div className="text-base sm:text-lg font-medium"
                             Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
+                          /div
+                        /div
                       )}
                       {currentSlide >= 4 && (
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="text-lg sm:text-xl font-semibold text-yellow-200 mb-4">
-                            🏗️ Самовольное строительство, неоформленный объект недвижимости!
-                          </div>
-                          <div className="text-base sm:text-lg font-medium">
+                        div className="space-y-3 sm:space-y-4"
+                          div className="text-lg sm:text-xl font-semibold text-yellow-400 mb-4"
+                            Самовольное строительство!
+                          /div
+                          div className="text-base sm:text-lg font-medium"
                             Сообщи, направим информацию в госорганы!
-                          </div>
-                        </div>
+                          /div
+                        /div
                       )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between items-center mt-6 space-y-4 sm:space-y-0">
-                <button 
+                    /div
+                  /div
+                /div
+              /div
+              div className="flex flex-col sm:flex-row justify-between items-center mt-6 space-y-4 sm:space-y-0"
+                button 
                   onClick={prevSlide}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                >
-                  <ChevronLeft size={20} />
-                  <span className="hidden sm:inline">Назад</span>
-                </button>
-                <div className="flex space-x-3">
-                  {[0, 1, 2, 3, 4].map((index) => (
-                    <button
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                
+                  ChevronLeft size={24} /
+                  span className="hidden sm:inline"Назад/span
+                /button
+                div className="flex space-x-3"
+                  {[0, 1, 2, 3, 4].map((index) = (
+                    button
                       key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        index === currentSlide ? 'bg-blue-600 scale-125' : 'bg-gray-300 hover:bg-gray-400'
+                      onClick={() = setCurrentSlide(index)}
+                      className={`w-4 h-4 rounded-full border-2 border-gray-300 transition-all duration-300 ${
+                        index === currentSlide ? 'bg-gray-600 scale-125' : 'bg-gray-400 hover:bg-gray-500'
                       }`}
-                    />
+                    /
                   ))}
-                </div>
-                <button 
+                /div
+                button 
                   onClick={nextSlide}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                >
-                  <span className="hidden sm:inline">Далее</span>
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            </div>
-          </div>
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                
+                  span className="hidden sm:inline"Далее/span
+                  ChevronRight size={24} /
+                /button
+              /div
+            /div
+          /div
 
           {/* Putin Section */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
